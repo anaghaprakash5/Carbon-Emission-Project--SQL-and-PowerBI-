@@ -1,6 +1,6 @@
 # Carbon Emission Project Using SQL and PowerBI
 
-In this project, I will use SQL and Power BI to analyze and visualize carbon emissions data, identifying the highest and lowest annual emissions and comparing changes in emissions per capita between 1975 and 2017.
+In this project, I an using SQL and Power BI to analyze and visualize carbon emissions data, identifying the highest and lowest annual emissions and comparing changes in emissions per capita between 1975 and 2017.
 
 1. Project Overview
 
