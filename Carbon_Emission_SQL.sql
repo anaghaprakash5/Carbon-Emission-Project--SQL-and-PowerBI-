@@ -1,6 +1,6 @@
 SELECT * FROM Carbon_Emission
 
--- Check for NULL values in any columns.
+-- check for NULL values in any columns.
 
 SELECT * FROM Carbon_Emission
 WHERE "CO2 emission estimates" IS NULL
@@ -14,7 +14,7 @@ WHERE Series IS NULL
 SELECT * FROM Carbon_Emission
 WHERE Value IS NULL
 
--- Checking the smaller parts of the dataset.
+-- checking the smaller parts of the dataset.
 
 SELECT MIN(Year), MAX(Year) 
 FROM Carbon_Emission 
@@ -38,26 +38,30 @@ CREATE TABLE Emissions_thousand
 Series nvarchar(100), Value float)
 
 -- Inserting values from the Carbon Emission table where 
--- Series = 'Emissions (thousand metric tons of carbon dioxide)' into the Emissions_thousand table.
+-- Series = 'Emissions (thousand metric tons of carbon dioxide)'
+-- into the Emissions_thousand table.
 
 INSERT INTO Emissions_thousand 
 SELECT * FROM Carbon_Emission WHERE 
 Series = 'Emissions (thousand metric tons of carbon dioxide)'
 
--- Creating a new table where Series = 'Emissions per capita (metric tons of carbon dioxide)'
+-- Creating a new table where Series = 'Emissions per capita (metric 
+-- tons of carbon dioxide)'
 
 CREATE TABLE Emissions_perCapita
 (Country nvarchar(50), Year int,
 Series nvarchar(100), Value float)
 
--- Inserting values from the Carbon Emission table where Series = 'Emissions per capita (metric tons of carbon dioxide)' into the Emissions_perCapita table.
+-- Inserting values from the Carbon Emission table where 
+-- Series = 'Emissions per capita (metric tons of carbon dioxide)'
+-- into the Emissions_perCapita table.
 
 INSERT INTO Emissions_perCapita 
 SELECT * FROM Carbon_Emission WHERE 
 Series = 'Emissions per capita (metric tons of carbon dioxide)'
 
 -- Finding data about United States of America only from Emissions_perCapita table.
--- But first, we need to know how United States of America is feeded in the table.
+-- But first we need to know how United States of America is feeded in the table.
 
 SELECT DISTINCT Country FROM Emissions_perCapita 
 WHERE Country LIKE 'U%'
@@ -74,8 +78,10 @@ Country = 'United States of America'
 SELECT YEAR FROM Emissions_perCapita 
 WHERE Country = 'United States of America' AND Value IN (20.168, 14.606)
 
--- The year for max value(20.168) is 1975 and the year for min value(14.606) is 2017.
--- Next, comparing the changes in emissions per capital in the year 2017 to 1975.
+-- The year for max value(20.168) is 1975 and the year for min 
+-- value(14.606) is 2017.
+-- Next, comparing the changes in emissions per capital in 
+-- the year 2017 to 1975.
 
 WITH Value1975 AS (
     SELECT Country, Value AS old_value
@@ -87,10 +93,14 @@ Value2017 AS (
     WHERE Year = 2017)
 SELECT Value1975.Country,
     Value1975.old_value,
-    Value2017.new_value FROM Value1975
-JOIN Value2017 ON Value1975.Country = Value2017.Country;
+    Value2017.new_value, 
+    (Value2017.new_value - Value1975.old_value) AS value_difference 
+FROM Value1975 JOIN Value2017 ON Value1975.Country = Value2017.Country 
+ORDER BY value_difference DESC
 
--- Now moving on the Emissions_thousand table to find the min & max values of USA.
+-- Gibraltar is the country having highest rate of increasing, that is 18.317.
+-- Luxembourg is the country with lowest rate of decreasing, that is -21.027.
+-- Now moving on to the Emissions_thousand table to find the min & max values of USA.
 
 SELECT * FROM Emissions_thousand
 
@@ -114,7 +124,7 @@ GROUP BY "CO2 emission estimates"
 ORDER BY sum_value DESC
 LIMIT 5;
 
--- China, United States of America, India, Russian Federation, Japan.
+-- China, United States of America, India, Russian Federation, Japan
 -- Finding the year in which United States of America emitted the highest amount of CO2.
 
 SELECT Year, Value FROM Carbon_Emission 
